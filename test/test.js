@@ -1,4 +1,4 @@
-import {getSpentTime} from '../index'
+import {getSpentTime} from '../src/index'
 
 let assert = require('chai').assert;
 
