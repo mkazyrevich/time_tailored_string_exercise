@@ -1,13 +1,13 @@
 ## How to use this repository
 
-**Install Node.js**
+1. **Install Node.js**
 
-**Install all dependencies**
+2. **Install all dependencies**
 ```
 npm install
 ```
 
-**Run all tests**
+3. **Run all tests**
 ```
 npm test
 ```
