@@ -5,12 +5,12 @@ export function getSpentTime(string) {
 
   let timeReg = new RegExp(/[ ][0-9.]+h?([0-9.]+)?m?(?=,|$| )/, 'g');
 
-  let userReg = new RegExp(/ [A-Za-z]([^, ]+)?(?= +[0-9.]+h?([0-9.]+)?m?(,|$| )?)/, 'g'); 
+  let userReg = new RegExp(/[ ][A-Za-z]([^, ]+)?(?= +[0-9.]+h?([0-9.]+)?m?(,|$| )?)/, 'g'); 
 
   let regSearch = new RegExp(/[0-9.]+h([0-9.]+)?m?/, 'g')
   
   for (let i = 0; i < string.length; i++) {
-    if (string[i] === ';') string = string.slice(i+1)
+    if (string[i] === ';') string = ' ' + string.slice(i+1) + ' ';
   }
 
   users = string.match(userReg).map((item) => item.replace(/,| /g, ''));
