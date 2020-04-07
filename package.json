@@ -9,6 +9,7 @@
   "dependencies": {
     "babel": "^6.23.0",
     "chai": "^4.2.0",
+    "jquery": "^3.4.1",
     "nodemon": "^2.0.2"
   },
   "devDependencies": {
