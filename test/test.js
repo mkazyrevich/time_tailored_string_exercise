@@ -1,4 +1,4 @@
-import {getSpentTime} from '../src/index'
+let calculateSpentTimeFromString = require ('../src/calculateSpentTimeFromString.js')
 
 let assert = require('chai').assert;
 
@@ -40,9 +40,9 @@ describe('getSpentTime()', function() {
 
   tests.forEach(function(test) {
     it(`string: ${test.string}
-      result: ${JSON.stringify(getSpentTime(test.string))}
+      result: ${JSON.stringify(calculateSpentTimeFromString(test.string))}
       expected: ${JSON.stringify(test.expected)}`, function() {
-      let res = JSON.stringify(getSpentTime(test.string));
+      let res = JSON.stringify(calculateSpentTimeFromString(test.string));
       assert.equal(res, JSON.stringify(test.expected));
     });
   });
