@@ -1,8 +1,9 @@
-let calculateSpentTimeFromString = require ('../src/calculateSpentTimeFromString.js')
+let calculateSpentTimeFromString = require ('../src/calculateSpentTimeFromString.js');
+// let calculateSpentTimeFromFile = require ('../src/calculateSpentTimeFromFile.js');
 
 let assert = require('chai').assert;
 
-describe('getSpentTime()', function() {
+describe('calculateSpentTimeFromString()', function() {
   let tests = [
     {string: 'all I did today; i 20m, 35m, 2.5h, 2h40m v 40m 35m 1.2h e 30, 60m', expected: {
       i: 365,
