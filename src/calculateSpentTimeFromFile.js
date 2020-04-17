@@ -61,9 +61,9 @@ function convertMinToHours(timeForEachUserWithTotalTime) {
 
   for (let user in timeForEachUserWithTotalTime) {
 
-      let hours = Math.floor(timeForEachUserWithTotalTime[user] / 60);
-      let minutes = timeForEachUserWithTotalTime[user] - hours * 60;
-      timeForEachUserWithTotalTime[user] = hours + 'h ' + minutes + 'm';
+    let hours = Math.floor(timeForEachUserWithTotalTime[user] / 60);
+    let minutes = timeForEachUserWithTotalTime[user] - hours * 60;
+    timeForEachUserWithTotalTime[user] = hours + 'h ' + minutes + 'm';
   }
 
   return timeForEachUserWithTotalTime
