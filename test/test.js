@@ -41,7 +41,6 @@ describe('calculateSpentTimeFromString()', function() {
 
   tests.forEach(function(test) {
     it(`string: ${test.string}
-      result: ${JSON.stringify(calculateSpentTimeFromString(test.string))}
       expected: ${JSON.stringify(test.expected)}`, function() {
       let res = JSON.stringify(calculateSpentTimeFromString(test.string));
       assert.equal(res, JSON.stringify(test.expected));

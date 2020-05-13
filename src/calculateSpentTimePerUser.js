@@ -1,7 +1,4 @@
-const sourceFilePath = process.argv[2];
-const targetFilePath = process.argv[3];
-
-function calculateSpentTimeFromFile(sourceFilePath, targetFilePath) {
+function calculateSpentTimePerUser(sourceFilePath, targetFilePath) {
 
   const fs = require("fs");
   const timeRecordsStringRegExp = new RegExp(/^\#{6}[^#].*/, 'gm');
@@ -14,8 +11,6 @@ function calculateSpentTimeFromFile(sourceFilePath, targetFilePath) {
 
   fs.writeFileSync(`${targetFilePath}` , JSON.stringify(convertedTimeForEachUserWithTotalTime, null, '\t'));
 }
-
-calculateSpentTimeFromFile(sourceFilePath, targetFilePath);
 
 function createUserToTimeEntryMaps(timeRecordsStrings) {
   let userToTimeEntryMaps = [];
@@ -68,3 +63,5 @@ function convertMinToHours(timeForEachUserWithTotalTime) {
 
   return timeForEachUserWithTotalTime
 }
+
+module.exports = calculateSpentTimePerUser;
