@@ -2,7 +2,7 @@ function calculateSpentTimePerProject(sourceFilePath, targetFilePath) {
 
   const timeRecordsStringRegExp = new RegExp(/^\#{6}[^#].*/, 'gm');
   const projectIDStringRegExp = new RegExp(/(?<=(^\#{6}[^#].*\r\n))^\w+/, 'gm');
-  const projectIDRegExp = new RegExp(/(?<=\w*)([a-z,0-9]+)_([a-z,0-9]+)$/, 'gm');
+  const projectIDRegExp = new RegExp(/(?<=\w*)([a-zA-Z0-9]+)_([a-zA-Z0-9]+)$/, 'gm');
 
   const fs = require("fs");
 
@@ -11,18 +11,11 @@ function calculateSpentTimePerProject(sourceFilePath, targetFilePath) {
   let totalTimePerEachString = calculateTotalTimePerEachString(userToTimeEntryMaps);
 
   let rawStringsWithProjectID = fs.readFileSync(`${sourceFilePath}`, "utf8").match(projectIDStringRegExp);
-  let projectIDs = rawStringsWithProjectID.map((item, index) => {
-    if(item.match(projectIDRegExp)) {
-      item.match(projectIDRegExp)[index];
-    }
-
-  })
+  let projectIDs = selectProjectID(rawStringsWithProjectID, projectIDRegExp);
+  let projectIDToTimeEntryMap = createProjectIDToTimeEntryMap(projectIDs, totalTimePerEachString);
+  let convertedTimeForEachProjectID = convertMinToHours(projectIDToTimeEntryMap); 
   
-  // fs.writeFileSync(`${targetFilePath}` , JSON.stringify(timeRecordsStrings, null, '\t'));
-  console.log(userToTimeEntryMaps);
-  console.log(rawStringsWithProjectID)
-  console.log(projectIDs);
-  console.log('ehguyerhger_heguyier_rgehyre_tt_ght'.match(projectIDRegExp))
+  fs.writeFileSync(`${targetFilePath}` , JSON.stringify(convertedTimeForEachProjectID, null, '\t'));
 }
 
 function createUserToTimeEntryMaps(timeRecordsStrings) {
@@ -39,7 +32,7 @@ function createUserToTimeEntryMaps(timeRecordsStrings) {
 }
 
 function calculateTotalTimePerEachString(userToTimeEntryMaps) {
-  let totalTimePerEachString = [];
+  let totalTimePerEachStringArray = [];
 
   for (let item in userToTimeEntryMaps) {
     let map = userToTimeEntryMaps[item];
@@ -49,22 +42,51 @@ function calculateTotalTimePerEachString(userToTimeEntryMaps) {
       totalTimePerOneString += map[user];
     }
 
-    totalTimePerEachString.push(totalTimePerOneString)
+    totalTimePerEachStringArray.push(totalTimePerOneString)
   }
 
-  return totalTimePerEachString;
+  return totalTimePerEachStringArray;
 }
 
-function convertMinToHours(timeForEachUserWithTotalTime) {
+function selectProjectID(rawStringsWithProjectID, projectIDRegExp) {
+  let projectIDs = [];
+  rawStringsWithProjectID.forEach((item) => {
+    projectID = item.match(projectIDRegExp)[0];
 
-  for (let user in timeForEachUserWithTotalTime) {
+    if(projectID) {
+      projectIDs.push(projectID)
+    }
+  })
 
-    let hours = Math.floor(timeForEachUserWithTotalTime[user] / 60);
-    let minutes = timeForEachUserWithTotalTime[user] - hours * 60;
-    timeForEachUserWithTotalTime[user] = hours + 'h ' + minutes + 'm';
+  return projectIDs;
+}
+
+function createProjectIDToTimeEntryMap(projectIDs, totalTimePerEachString) {
+  let projectIDToTimeEntryMap = {};
+
+  projectIDs.forEach((item, index) => {
+    if(!projectIDToTimeEntryMap[item]) {
+      projectIDToTimeEntryMap[item] = totalTimePerEachString[index];
+    } else {
+      projectIDToTimeEntryMap[item] += totalTimePerEachString[index];
+    }
+  })
+
+  return projectIDToTimeEntryMap;
+}
+
+function convertMinToHours(projectIDToTimeEntryMap) {
+
+  let convertedTimeForEachProjectID = {};
+
+  for (let projectID in projectIDToTimeEntryMap) {
+
+    let hours = Math.floor(projectIDToTimeEntryMap[projectID] / 60);
+    let minutes = projectIDToTimeEntryMap[projectID] - hours * 60;
+    convertedTimeForEachProjectID[projectID] = hours + 'h ' + minutes + 'm';
   }
 
-  return timeForEachUserWithTotalTime
+  return convertedTimeForEachProjectID
 }
 
 module.exports = calculateSpentTimePerProject;

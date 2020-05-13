@@ -54,14 +54,16 @@ function calculateTotalTimeForAllUsers(timeForEachUser) {
 
 function convertMinToHours(timeForEachUserWithTotalTime) {
 
+  let convertedTimeForEachUserWithTotalTime = {};
+
   for (let user in timeForEachUserWithTotalTime) {
 
     let hours = Math.floor(timeForEachUserWithTotalTime[user] / 60);
     let minutes = timeForEachUserWithTotalTime[user] - hours * 60;
-    timeForEachUserWithTotalTime[user] = hours + 'h ' + minutes + 'm';
+    convertedTimeForEachUserWithTotalTime[user] = hours + 'h ' + minutes + 'm';
   }
 
-  return timeForEachUserWithTotalTime
+  return convertedTimeForEachUserWithTotalTime
 }
 
 module.exports = calculateSpentTimePerUser;
