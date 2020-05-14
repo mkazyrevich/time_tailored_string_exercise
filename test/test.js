@@ -1,49 +1,74 @@
-let calculateSpentTimeFromString = require ('../src/calculateSpentTimeFromString.js');
-// let calculateSpentTimeFromFile = require ('../src/calculateSpentTimeFromFile.js');
+let selectMode = require ('../src/selectMode.js');
 
-let assert = require('chai').assert;
+const assert = require('chai').assert;
+const fs = require("fs");
 
-describe('calculateSpentTimeFromString()', function() {
+describe('calculateTime()', function() {
   let tests = [
-    {string: 'all I did today; i 20m, 35m, 2.5h, 2h40m v 40m 35m 1.2h e 30, 60m', expected: {
-      i: 365,
-      v: 147,
-      e: 90
-    }},
-    {string: 'all I did today; i  30m, 35m, 2m, 5m, 3h30m v 40m 35m 1.5h sef 350, 60', expected: {
-      i: 282,
-      v: 165,
-      sef: 410
-    }},
-    {string: 'all I did today;r i vlad 20m, 20, 20m, g 35m, 2.5h, 2hu40m v 40h20m vlad 132h20m r1.2h e 30, 60m i pp', expected: {
-      vlad: 8000,
-      g: 185,
-      v: 2420,
-      e: 90
-    }},
-    {string: 'all I did today;r 22 i vlad 20m, 20h 20m, g 35m, 2.5h 2hu40m v 40h20m vlad 132h20m r1.2h e 30, 60m i pp 1h4m 2m', expected: {
-      r: 22,
-      vlad: 9180,
-      g: 185,
-      v: 2420,
-      e: 90,
-      pp: 66,
-    }},
-    {string: 'all I did today;r 22 i vlad 20m, 20h 20m, g 35m, 2.5h2hu40m v 40h20m vlad 132h20m r1.2h e 30, 60m i pp 1h4m 2m', expected: {
-      r: 22,
-      vlad: 9180,
-      g: 35,
-      v: 2420,
-      e: 90,
-      pp: 66,
-    }}
-  ];
+    {
+      parameters: ['node', 'src/calculateTime.js', '--user', './test/test.txt', './test/result.txt'], 
+      expected: {
+        "r": "0h 22m",
+        "vlad": "292h 15m",
+        "g": "3h 5m",
+        "v": "80h 40m",
+        "e": "3h 30m",
+        "pp": "1h 6m",
+        "a": "54h 37m",
+        "maks": "33h 0m",
+        "Total time:": "468h 35m"
+      }, 
+    },
+    {
+      parameters: ['node', 'src/calculateTime.js', '-u', './test/test.txt', './test/result.txt'], 
+      expected: {
+        "r": "0h 22m",
+        "vlad": "292h 15m",
+        "g": "3h 5m",
+        "v": "80h 40m",
+        "e": "3h 30m",
+        "pp": "1h 6m",
+        "a": "54h 37m",
+        "maks": "33h 0m",
+        "Total time:": "468h 35m"
+      },
+    },
+    {
+      parameters: ['node', 'src/calculateTime.js', '--project', './test/test.txt', './test/result.txt'], 
+      expected: {
+        "project_1": "199h 33m",
+        "Project_test": "231h 57m",
+        "Test_ID": "1h 10m",
+        "project_3": "35h 55m"
+      }
+    },
+    {
+      parameters: ['node', 'src/calculateTime.js', '-p', './test/test.txt', './test/result.txt'], 
+      expected: {
+        "project_1": "199h 33m",
+        "Project_test": "231h 57m",
+        "Test_ID": "1h 10m",
+        "project_3": "35h 55m"
+      }
+    },
+  ] 
 
   tests.forEach(function(test) {
-    it(`string: ${test.string}
-      expected: ${JSON.stringify(test.expected)}`, function() {
-      let res = JSON.stringify(calculateSpentTimeFromString(test.string));
-      assert.equal(res, JSON.stringify(test.expected));
+    process.argv = test.parameters;
+    let rawSource = fs.readFileSync(`${process.argv[3]}`, "utf8");
+    let source = rawSource.replace(/\r\n/g, '\n');
+    selectMode(process.argv);
+    let rawResultString = fs.readFileSync(`${process.argv[4]}`, "utf8");
+    let resultString = rawResultString.replace(/\t/g, ' ')
+
+    it(`mode: ${process.argv[2]}
+        
+        source: ${source}
+
+        expected: ${JSON.stringify(test.expected, null, ' ')}
+
+        result: ${resultString}`, function() {
+        assert.equal(resultString, JSON.stringify(test.expected, null, ' '));
     });
   });
 });

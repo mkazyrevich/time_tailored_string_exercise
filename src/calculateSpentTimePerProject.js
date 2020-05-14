@@ -51,11 +51,13 @@ function calculateTotalTimePerEachString(userToTimeEntryMaps) {
 function selectProjectID(rawStringsWithProjectID, projectIDRegExp) {
   let projectIDs = [];
   rawStringsWithProjectID.forEach((item) => {
-    projectID = item.match(projectIDRegExp)[0];
+    let projectID;
 
-    if(projectID) {
-      projectIDs.push(projectID)
+    if(item.match(projectIDRegExp)) {
+      projectID = item.match(projectIDRegExp)[0];
     }
+
+    projectIDs.push(projectID);
   })
 
   return projectIDs;

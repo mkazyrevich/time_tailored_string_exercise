@@ -1,15 +1,17 @@
-###### all I did today;r 22 i vlad 20m, 20h 20m, g 35m, 2.5h 2hu40m v 40h20m vlad 132h20m r1.2h e 30, 60m i pp 1h4m 2m
-hfdgyudfgyuergfyergfyergeyru_dfds_a
-erlkgjerugher
-###### all I did today;r i vlad 20m, 20, 20m, g 35m, 2.5h, 2hu40m v 40h20m vlad 132h20m r1.2h e 30, 60m i pp a 32
-Maks_test
+###### all I did today;r 22 i vlad 20m, 20h 20m, g 35m, 2.5h 2hu40m v 40h20m vlad 132h30m r1.2h e 30, 60m i pp 1h4m 2m
+Test_task_project_1
+Invalid String
+###### all I did today; r i r2.2h vlad 20m, 20, 30m, 3.5h, 2hu40m v 40h20m vlad 132h20m e 60, 60m i pp a 32
+Project_test
 ###### gikfdu; a 70
-addd_f
+Project_Test_ID
 ejgeruihgeru
 ###### gdfgdfgd;a 50h  a 2h5m
-fhuhffehfuehfuefheru_uwhgfyerf_fhreyfghe_Maks_test
+fhuhffehfuehfuefheru_uwhgfyerf_Project_test
 fdsfdsfdsfdsfdsfds
-gurhguerhgurehgure_trhghrte
-rgortjhr ######hhdkj
-tttt
-###### jghkr; fhjgf
+Project_Test_ID
+####### gdfgdfgd;b 50h a 2h5m
+Project_2
+##### jghkr; a 50h a 2h5m
+###### gdfgdfgd;a 50m vlad 2h5m, maks 33h
+ggggg_project_3

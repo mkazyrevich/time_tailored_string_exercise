@@ -1,7 +1,9 @@
 const calculateSpentTimePerUser = require('./calculateSpentTimePerUser');
 const calculateSpentTimePerProject = require('./calculateSpentTimePerProject');
 
-function selectMode(sourceFilePath, targetFilePath) {
+function selectMode(parameters) {
+  let sourceFilePath = parameters[3];
+  let targetFilePath = parameters[4];
 
   const commander = require('commander');
   commander
