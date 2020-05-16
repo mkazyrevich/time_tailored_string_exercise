@@ -1,5 +1,6 @@
 const calculateSpentTimePerUser = require('./calculateSpentTimePerUser');
 const calculateSpentTimePerProject = require('./calculateSpentTimePerProject');
+const calculateSpentTimePerDetailedProject = require('./calculateSpentTimePerDetailedProject');
 
 function selectMode(parameters) {
   let sourceFilePath = parameters[3];
@@ -7,8 +8,9 @@ function selectMode(parameters) {
 
   const commander = require('commander');
   commander
-    .option('-u, --user', 'calculate spent time for each user')
-    .option('-p, --project', 'calculate spent time for project')
+    .option('-u, --user', 'calculate spent time per each user')
+    .option('-p, --project', 'calculate spent time per project')
+    .option('-d, --detailedProject', 'calculate spent time per project with details on each task')
     .parse();
 
   if(commander.user) {
@@ -17,6 +19,10 @@ function selectMode(parameters) {
 
   if(commander.project) {
     calculateSpentTimePerProject(sourceFilePath, targetFilePath);
+  }
+
+  if(commander.detailedProject) {
+    calculateSpentTimePerDetailedProject(sourceFilePath, targetFilePath);
   }
 }
 

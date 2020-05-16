@@ -7,7 +7,7 @@ function calculateSpentTimePerUser(sourceFilePath, targetFilePath) {
   let userToTimeEntryMaps = createUserToTimeEntryMaps(timeRecordsStrings);
   let timeForEachUser = calculateTotalTimeForEachUser(userToTimeEntryMaps);
   let timeForEachUserWithTotalTime = calculateTotalTimeForAllUsers(timeForEachUser);
-  let convertedTimeForEachUserWithTotalTime = convertMinToHours(timeForEachUserWithTotalTime);
+  let convertedTimeForEachUserWithTotalTime = convertMinToHoursForEachEntry(timeForEachUserWithTotalTime);
 
   fs.writeFileSync(`${targetFilePath}` , JSON.stringify(convertedTimeForEachUserWithTotalTime, null, '\t'));
 }
@@ -52,18 +52,28 @@ function calculateTotalTimeForAllUsers(timeForEachUser) {
   return timeForEachUser;
 }
 
-function convertMinToHours(timeForEachUserWithTotalTime) {
+function convertMinToHours(timeStringInMin) {
 
-  let convertedTimeForEachUserWithTotalTime = {};
+  let hours = Math.floor(timeStringInMin / 60);
+  let minutes = timeStringInMin - hours * 60;
+  let timeStringInHours = hours + 'h ' + minutes + 'm';
 
-  for (let user in timeForEachUserWithTotalTime) {
+  return timeStringInHours
+}
 
-    let hours = Math.floor(timeForEachUserWithTotalTime[user] / 60);
-    let minutes = timeForEachUserWithTotalTime[user] - hours * 60;
-    convertedTimeForEachUserWithTotalTime[user] = hours + 'h ' + minutes + 'm';
+function convertMinToHoursForEachEntry(mapWithTimeEntries) {
+
+  let convertedMapWithTimeEntries = {};
+
+  for (let item in mapWithTimeEntries) {
+    if(typeof mapWithTimeEntries[item] === 'object') {
+      convertedMapWithTimeEntries[item] = convertMinToHoursForEachEntry(mapWithTimeEntries[item]);
+    } else {
+      convertedMapWithTimeEntries[item] = convertMinToHours(mapWithTimeEntries[item]);
+    }
   }
 
-  return convertedTimeForEachUserWithTotalTime
+  return convertedMapWithTimeEntries
 }
 
 module.exports = calculateSpentTimePerUser;

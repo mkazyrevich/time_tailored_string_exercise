@@ -1,4 +1,4 @@
-function calculateSpentTimePerProject(sourceFilePath, targetFilePath) {
+function calculateSpentTimePerDetailedProject(sourceFilePath, targetFilePath) {
 
   const timeRecordsStringRegExp = new RegExp(/^\#{6}[^#].*/, 'gm');
   const projectIDStringRegExp = new RegExp(/(?<=(^\#{6}[^#].*\r\n))^\w+/, 'gm');
@@ -12,10 +12,12 @@ function calculateSpentTimePerProject(sourceFilePath, targetFilePath) {
 
   let rawStringsWithProjectID = fs.readFileSync(`${sourceFilePath}`, "utf8").match(projectIDStringRegExp);
   let projectIDs = selectProjectID(rawStringsWithProjectID, projectIDRegExp);
-  let projectIDToTimeEntryMap = createProjectIDToTimeEntryMap(projectIDs, totalTimePerEachString);
-  let convertedTimeForEachProjectID = convertMinToHoursForEachEntry(projectIDToTimeEntryMap); 
+  let tasks = selectTask(rawStringsWithProjectID, projectIDs);
+  let projectIDWithTasksToTimeEntryMap = createProjectIDWithTasksToTimeEntryMap(projectIDs, tasks, totalTimePerEachString);
+  let sortedProjectIDWithTasksToTimeEntryMap = sortTasksTimesPerEachProject(projectIDWithTasksToTimeEntryMap);
+  let convertedTimeForEachProjectIDWithTasks = convertMinToHoursForEachEntry(sortedProjectIDWithTasksToTimeEntryMap);
   
-  fs.writeFileSync(`${targetFilePath}` , JSON.stringify(convertedTimeForEachProjectID, null, '\t'));
+  fs.writeFileSync(`${targetFilePath}` , JSON.stringify(convertedTimeForEachProjectIDWithTasks, null, '\t'));
 }
 
 function createUserToTimeEntryMaps(timeRecordsStrings) {
@@ -63,24 +65,41 @@ function selectProjectID(rawStringsWithProjectID, projectIDRegExp) {
   return projectIDs;
 }
 
-function createProjectIDToTimeEntryMap(projectIDs, totalTimePerEachString) {
-  let projectIDToTimeEntryMap = {};
+function selectTask(rawStringsWithProjectID, projectIDs) {
+  let tasks = [];
+  let task = '';
+  rawStringsWithProjectID.forEach((string, index) => {
+    let projectID = projectIDs[index];
+    task = string.slice(0, string.indexOf(projectID)-1);
 
-  projectIDs.forEach((item, index) => {
-    if(!projectIDToTimeEntryMap[item]) {
-      projectIDToTimeEntryMap[item] = totalTimePerEachString[index];
-    } else {
-      projectIDToTimeEntryMap[item] += totalTimePerEachString[index];
-    }
+    tasks.push(task);
   })
 
-  return projectIDToTimeEntryMap;
+  return tasks;
+}
+
+function createProjectIDWithTasksToTimeEntryMap(projectIDs, tasks, totalTimePerEachString) {
+  let projectIDWithTasksToTimeEntryMap = {};
+
+  projectIDs.forEach((item, index) => {
+    let project = {};
+    let task = tasks[index];
+    if(!projectIDWithTasksToTimeEntryMap[item]) {
+      projectIDWithTasksToTimeEntryMap[item] = project;
+      project['Total Time'] = totalTimePerEachString[index]
+    } else {
+      project = projectIDWithTasksToTimeEntryMap[item];
+      project['Total Time'] += totalTimePerEachString[index];
+    }
+    project[task] = totalTimePerEachString[index];
+  })
+  return projectIDWithTasksToTimeEntryMap;
 }
 
 function convertMinToHours(timeStringInMin) {
 
-  let hours = Math.floor(timeStringInMin / 60);
-  let minutes = timeStringInMin - hours * 60;
+  let hours = Math.floor(+timeStringInMin / 60);
+  let minutes = +timeStringInMin - hours * 60;
   let timeStringInHours = hours + 'h ' + minutes + 'm';
 
   return timeStringInHours
@@ -101,4 +120,33 @@ function convertMinToHoursForEachEntry(mapWithTimeEntries) {
   return convertedMapWithTimeEntries
 }
 
-module.exports = calculateSpentTimePerProject;
+function sortTasksTimesPerEachProject(mapWithTimeEntries) {
+  let sortedMapWithTimeEntries = {};
+  let projectWithProjectTasks = [];
+
+  projectWithProjectTasks = Object.entries(mapWithTimeEntries);
+
+  projectWithProjectTasks.forEach((item) => {
+    item[1] = Object.entries(item[1]);
+  })
+
+  projectWithProjectTasks.forEach((item) => {
+    item[1] = item[1].sort((item1, item2) => {return item2[1] - item1[1]});
+  })
+
+  projectWithProjectTasks.forEach((item) => {
+    sortedMapWithTimeEntries[item[0]] = item[1];
+  })
+
+  for (let project in sortedMapWithTimeEntries) {
+    let taskTime = {};
+    for (let task of sortedMapWithTimeEntries[project]) {
+      taskTime[task[0]] = task[1];
+      sortedMapWithTimeEntries[project] = taskTime
+    }
+  }
+
+  return sortedMapWithTimeEntries
+}
+
+module.exports = calculateSpentTimePerDetailedProject;
