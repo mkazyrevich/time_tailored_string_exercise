@@ -38,7 +38,14 @@ or
 node <path to calculateTime.js> -p <path to source file> <path to target file>
 ```
 
-5. **Run tests**
+5. **Calculate time per project with details on each task**
+```
+node <path to calculateTime.js> --detailedProject <path to source file> <path to target file>
+or
+node <path to calculateTime.js> -d <path to source file> <path to target file>
+```
+
+6. **Run tests**
 ```
 npm test
 ```
